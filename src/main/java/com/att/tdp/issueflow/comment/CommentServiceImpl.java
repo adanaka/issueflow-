@@ -8,6 +8,8 @@ import com.att.tdp.issueflow.comment.dto.CreateCommentRequest;
 import com.att.tdp.issueflow.comment.dto.UpdateCommentRequest;
 import com.att.tdp.issueflow.common.SecurityUtils;
 import com.att.tdp.issueflow.common.exception.ResourceNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.att.tdp.issueflow.ticket.Ticket;
 import com.att.tdp.issueflow.ticket.TicketRepository;
 import com.att.tdp.issueflow.user.User;
@@ -77,6 +79,8 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findByIdAndTicketId(commentId, ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + commentId));
 
+        requireAuthorOrAdmin(comment);
+
         Set<Long> oldUserIds = commentMentionRepository.findByIdCommentId(commentId).stream()
                 .map(cm -> cm.getId().getUserId())
                 .collect(Collectors.toSet());
@@ -95,6 +99,9 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long ticketId, Long commentId) {
         Comment comment = commentRepository.findByIdAndTicketId(commentId, ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + commentId));
+
+        requireAuthorOrAdmin(comment);
+
         commentRepository.delete(comment);
         auditLogService.record(AuditAction.DELETE, AuditEntityType.COMMENT, commentId,
                 securityUtils.getCurrentUserId(),
@@ -123,6 +130,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     // --- private helpers ---
+
+    private void requireAuthorOrAdmin(Comment comment) {
+        Long currentUserId = securityUtils.getCurrentUserId();
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (!isAdmin && !comment.getAuthor().getId().equals(currentUserId)) {
+            throw new AccessDeniedException("Not authorized to modify this comment");
+        }
+    }
 
     private Set<String> parseMentionedUsernames(String content) {
         Set<String> usernames = new LinkedHashSet<>();

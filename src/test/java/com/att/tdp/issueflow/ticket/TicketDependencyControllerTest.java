@@ -103,7 +103,7 @@ class TicketDependencyControllerTest extends BaseIntegrationTest {
     private void advanceStatus(Long ticketId, TicketStatus newStatus) throws Exception {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(newStatus);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -283,7 +283,7 @@ class TicketDependencyControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(TicketStatus.DONE);
 
-        mockMvc.perform(put("/tickets/" + ticketAId)
+        mockMvc.perform(patch("/tickets/" + ticketAId)
                         .header("Authorization", bearer())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -300,7 +300,7 @@ class TicketDependencyControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(TicketStatus.DONE);
 
-        mockMvc.perform(put("/tickets/" + ticketAId)
+        mockMvc.perform(patch("/tickets/" + ticketAId)
                         .header("Authorization", bearer())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -321,7 +321,7 @@ class TicketDependencyControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(TicketStatus.DONE);
 
-        mockMvc.perform(put("/tickets/" + ticketAId)
+        mockMvc.perform(patch("/tickets/" + ticketAId)
                         .header("Authorization", bearer())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -343,7 +343,7 @@ class TicketDependencyControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(TicketStatus.DONE);
 
-        mockMvc.perform(put("/tickets/" + ticketAId)
+        mockMvc.perform(patch("/tickets/" + ticketAId)
                         .header("Authorization", bearer())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))

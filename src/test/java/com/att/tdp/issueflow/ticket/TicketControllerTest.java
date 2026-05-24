@@ -214,7 +214,7 @@ class TicketControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(TicketStatus.IN_PROGRESS);
 
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -228,14 +228,14 @@ class TicketControllerTest extends BaseIntegrationTest {
 
         UpdateTicketRequest toInProgress = new UpdateTicketRequest();
         toInProgress.setStatus(TicketStatus.IN_PROGRESS);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                 .header("Authorization", bearer(devToken))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(toInProgress)));
 
         UpdateTicketRequest toInReview = new UpdateTicketRequest();
         toInReview.setStatus(TicketStatus.IN_REVIEW);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(toInReview)))
@@ -250,7 +250,7 @@ class TicketControllerTest extends BaseIntegrationTest {
         for (TicketStatus next : new TicketStatus[]{TicketStatus.IN_PROGRESS, TicketStatus.IN_REVIEW}) {
             UpdateTicketRequest req = new UpdateTicketRequest();
             req.setStatus(next);
-            mockMvc.perform(put("/tickets/" + ticketId)
+            mockMvc.perform(patch("/tickets/" + ticketId)
                     .header("Authorization", bearer(devToken))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(req)));
@@ -258,7 +258,7 @@ class TicketControllerTest extends BaseIntegrationTest {
 
         UpdateTicketRequest toDone = new UpdateTicketRequest();
         toDone.setStatus(TicketStatus.DONE);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(toDone)))
@@ -275,7 +275,7 @@ class TicketControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setStatus(TicketStatus.DONE);
 
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -288,14 +288,14 @@ class TicketControllerTest extends BaseIntegrationTest {
 
         UpdateTicketRequest toInProgress = new UpdateTicketRequest();
         toInProgress.setStatus(TicketStatus.IN_PROGRESS);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                 .header("Authorization", bearer(devToken))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(toInProgress)));
 
         UpdateTicketRequest backToTodo = new UpdateTicketRequest();
         backToTodo.setStatus(TicketStatus.TODO);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(backToTodo)))
@@ -309,7 +309,7 @@ class TicketControllerTest extends BaseIntegrationTest {
         for (TicketStatus next : new TicketStatus[]{TicketStatus.IN_PROGRESS, TicketStatus.IN_REVIEW, TicketStatus.DONE}) {
             UpdateTicketRequest req = new UpdateTicketRequest();
             req.setStatus(next);
-            mockMvc.perform(put("/tickets/" + ticketId)
+            mockMvc.perform(patch("/tickets/" + ticketId)
                     .header("Authorization", bearer(devToken))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(req)));
@@ -317,7 +317,7 @@ class TicketControllerTest extends BaseIntegrationTest {
 
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setTitle("New Title After Done");
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -335,7 +335,7 @@ class TicketControllerTest extends BaseIntegrationTest {
         for (TicketStatus s : new TicketStatus[]{TicketStatus.IN_PROGRESS, TicketStatus.IN_REVIEW}) {
             UpdateTicketRequest req = new UpdateTicketRequest();
             req.setStatus(s);
-            mockMvc.perform(put("/tickets/" + ticketId)
+            mockMvc.perform(patch("/tickets/" + ticketId)
                     .header("Authorization", bearer(devToken))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(req)));
@@ -349,7 +349,7 @@ class TicketControllerTest extends BaseIntegrationTest {
 
         UpdateTicketRequest toDone = new UpdateTicketRequest();
         toDone.setStatus(TicketStatus.DONE);
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(devToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(toDone)))
@@ -457,7 +457,7 @@ class TicketControllerTest extends BaseIntegrationTest {
 
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setTitle("Updated via HTTP");
-        mockMvc.perform(put("/tickets/" + ticketId)
+        mockMvc.perform(patch("/tickets/" + ticketId)
                         .header("Authorization", bearer(adminToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))

@@ -273,7 +273,7 @@ class AuditLogControllerTest extends BaseIntegrationTest {
         UpdateTicketRequest req = new UpdateTicketRequest();
         req.setTitle("Updated Title");
 
-        mockMvc.perform(put("/tickets/" + ticket.getId())
+        mockMvc.perform(patch("/tickets/" + ticket.getId())
                         .header("Authorization", bearer())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
