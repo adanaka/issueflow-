@@ -1,0 +1,466 @@
+// IssueFlow – Ticket Management System | API Tests
+// Environment: select "dev" in the top-right dropdown before running
+
+// ============================================================
+// USERS
+// ============================================================
+
+### [USER-01] Create user – DEVELOPER (valid)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "jdoe",
+  "email": "jdoe@example.com",
+  "fullName": "John Doe",
+  "role": "DEVELOPER"
+}
+
+### [USER-02] Create user – ADMIN (valid)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "asmith",
+  "email": "asmith@example.com",
+  "fullName": "Alice Smith",
+  "role": "ADMIN"
+}
+
+### [USER-03] Get all users
+GET {{baseUrl}}/users
+
+### [USER-04] Get user by ID (valid)
+GET {{baseUrl}}/users/{{userId}}
+
+### [USER-05] Update user – change fullName and role (valid)
+POST {{baseUrl}}/users/update/{{userId}}
+Content-Type: application/json
+
+{
+  "fullName": "John A. Doe",
+  "role": "ADMIN"
+}
+
+### [USER-06] Update user – partial update, fullName only
+POST {{baseUrl}}/users/update/{{userId}}
+Content-Type: application/json
+
+{
+  "fullName": "Jonathan Doe"
+}
+
+### [USER-07] Update user – role only
+POST {{baseUrl}}/users/update/{{userId}}
+Content-Type: application/json
+
+{
+  "role": "DEVELOPER"
+}
+
+### [USER-08] Delete user by ID
+DELETE {{baseUrl}}/users/{{userId}}
+
+### [USER-09] Get deleted user – expect 404
+GET {{baseUrl}}/users/{{userId}}
+
+// ── Negative / Edge Cases ──────────────────────────────────
+
+### [USER-10] Create user – missing required fields (expect 400)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "incomplete"
+}
+
+### [USER-11] Create user – invalid role value (expect 400)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "baduser",
+  "email": "bad@example.com",
+  "fullName": "Bad User",
+  "role": "MANAGER"
+}
+
+### [USER-12] Create user – invalid email format (expect 400)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "bademail",
+  "email": "not-an-email",
+  "fullName": "Bad Email",
+  "role": "DEVELOPER"
+}
+
+### [USER-13] Create user – username too short (expect 400)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "ab",
+  "email": "short@example.com",
+  "fullName": "Short Username",
+  "role": "DEVELOPER"
+}
+
+### [USER-14] Create user – duplicate username (expect 409)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "asmith",
+  "email": "different@example.com",
+  "fullName": "Duplicate Username",
+  "role": "DEVELOPER"
+}
+
+### [USER-15] Create user – duplicate email (expect 409)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "uniqueuser",
+  "email": "asmith@example.com",
+  "fullName": "Duplicate Email",
+  "role": "DEVELOPER"
+}
+
+### [USER-16] Create user – empty body (expect 400)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{}
+
+### [USER-17] Get user – non-existent ID (expect 404)
+GET {{baseUrl}}/users/9999
+
+### [USER-18] Update user – non-existent ID (expect 404)
+POST {{baseUrl}}/users/update/9999
+Content-Type: application/json
+
+{
+  "fullName": "Ghost User"
+}
+
+### [USER-19] Delete user – non-existent ID (expect 404)
+DELETE {{baseUrl}}/users/9999
+
+// ============================================================
+// PROJECTS
+// ============================================================
+
+### [PROJ-01] Create project (valid)
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "name": "IssueFlow Core",
+  "description": "Main backend project for the IssueFlow system",
+  "ownerId": 1
+}
+
+### [PROJ-02] Create second project
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "name": "IssueFlow Frontend",
+  "description": "React frontend for IssueFlow",
+  "ownerId": 1
+}
+
+### [PROJ-03] Get all active projects
+GET {{baseUrl}}/projects
+
+### [PROJ-04] Get project by ID
+GET {{baseUrl}}/projects/{{projectId}}
+
+### [PROJ-05] Update project – name and description
+PATCH {{baseUrl}}/projects/{{projectId}}
+Content-Type: application/json
+
+{
+  "name": "IssueFlow Core v2",
+  "description": "Updated description for the core backend"
+}
+
+### [PROJ-06] Update project – name only
+PATCH {{baseUrl}}/projects/{{projectId}}
+Content-Type: application/json
+
+{
+  "name": "IssueFlow Backend"
+}
+
+### [PROJ-07] Soft-delete project
+DELETE {{baseUrl}}/projects/{{projectId}}
+
+### [PROJ-08] Verify deleted project excluded from active list
+GET {{baseUrl}}/projects
+
+### [PROJ-09] Get soft-deleted projects
+GET {{baseUrl}}/projects/deleted
+
+### [PROJ-10] Get deleted project via normal endpoint (expect 404)
+GET {{baseUrl}}/projects/{{projectId}}
+
+### [PROJ-11] Restore soft-deleted project
+POST {{baseUrl}}/projects/{{projectId}}/restore
+
+### [PROJ-12] Verify project is back in active list
+GET {{baseUrl}}/projects
+
+// ── Negative / Edge Cases ──────────────────────────────────
+
+### [PROJ-12] Create project – missing name (expect 400)
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "description": "No name provided",
+  "ownerId": 1
+}
+
+### [PROJ-13] Create project – missing description (expect 400)
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "name": "No Description",
+  "ownerId": 1
+}
+
+### [PROJ-14] Create project – non-existent owner (expect 404)
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{
+  "name": "Ghost Project",
+  "description": "Owner does not exist",
+  "ownerId": 9999
+}
+
+### [PROJ-15] Create project – empty body (expect 400)
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{}
+
+### [PROJ-16] Get project – non-existent ID (expect 404)
+GET {{baseUrl}}/projects/9999
+
+### [PROJ-17] Update project – non-existent ID (expect 404)
+PATCH {{baseUrl}}/projects/9999
+Content-Type: application/json
+
+{
+  "name": "Ghost Update"
+}
+
+### [PROJ-18] Delete project – non-existent ID (expect 404)
+DELETE {{baseUrl}}/projects/9999
+
+### [PROJ-19] Restore project – not deleted (expect 400)
+POST {{baseUrl}}/projects/{{projectId}}/restore
+
+// ============================================================
+// AUTH
+// ============================================================
+
+### [AUTH-01] Login – valid credentials
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "secret123"
+}
+
+### [AUTH-02] Get current user (/me) – requires Bearer token
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### [AUTH-03] Logout – invalidates token
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+### [AUTH-04] Access /me after logout (expect 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### [AUTH-05] Access /projects without token (expect 401)
+GET {{baseUrl}}/projects
+
+### [AUTH-06] Access /projects with valid token (expect 200)
+GET {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+
+// ── Negative Cases ─────────────────────────────────────────
+
+### [AUTH-07] Login – wrong password (expect 404)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "wrongpassword"
+}
+
+### [AUTH-08] Login – non-existent user (expect 404)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "nobody",
+  "password": "secret123"
+}
+
+### [AUTH-09] Login – missing fields (expect 400)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{}
+
+### [AUTH-10] Access protected endpoint with invalid token (expect 401)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer invalidtoken
+
+// ============================================================
+// TICKETS
+// ============================================================
+
+### [TKT-01] Create ticket – BUG (valid)
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Fix login bug",
+  "description": "Login fails on mobile devices",
+  "priority": "HIGH",
+  "type": "BUG",
+  "projectId": 1,
+  "assigneeId": 1
+}
+
+### [TKT-02] Create ticket – FEATURE with dueDate
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Add dark mode",
+  "description": "Implement dark theme support",
+  "priority": "LOW",
+  "type": "FEATURE",
+  "projectId": 1,
+  "dueDate": "2025-01-01T00:00:00"
+}
+
+### [TKT-03] Get ticket by ID
+GET {{baseUrl}}/tickets/{{ticketId}}
+Authorization: Bearer {{token}}
+
+### [TKT-04] Get all tickets for a project
+GET {{baseUrl}}/projects/{{projectId}}/tickets
+Authorization: Bearer {{token}}
+
+### [TKT-05] Update ticket – advance status TODO → IN_PROGRESS
+PUT {{baseUrl}}/tickets/{{ticketId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "IN_PROGRESS"
+}
+
+### [TKT-06] Update ticket – advance status IN_PROGRESS → IN_REVIEW
+PUT {{baseUrl}}/tickets/{{ticketId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "IN_REVIEW"
+}
+
+### [TKT-07] Update ticket – advance to DONE
+PUT {{baseUrl}}/tickets/{{ticketId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "DONE"
+}
+
+### [TKT-08] Update DONE ticket (expect 400)
+PUT {{baseUrl}}/tickets/{{ticketId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Try to update done ticket"
+}
+
+### [TKT-09] Soft-delete ticket
+DELETE {{baseUrl}}/tickets/{{ticketId}}
+Authorization: Bearer {{token}}
+
+### [TKT-10] Get deleted ticket (expect 404)
+GET {{baseUrl}}/tickets/{{ticketId}}
+Authorization: Bearer {{token}}
+
+// ── Negative / Edge Cases ──────────────────────────────────
+
+### [TKT-11] Create ticket – missing required fields (expect 400)
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "No priority or type"
+}
+
+### [TKT-12] Create ticket – non-existent project (expect 404)
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Ghost ticket",
+  "priority": "LOW",
+  "type": "TASK",
+  "projectId": 9999
+}
+
+### [TKT-13] Create ticket – non-existent assignee (expect 404)
+POST {{baseUrl}}/tickets
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Bad assignee",
+  "priority": "LOW",
+  "type": "BUG",
+  "projectId": 1,
+  "assigneeId": 9999
+}
+
+### [TKT-14] Update ticket – backward status transition (expect 400)
+PUT {{baseUrl}}/tickets/{{ticketId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "status": "TODO"
+}
+
+### [TKT-15] Get ticket – non-existent ID (expect 404)
+GET {{baseUrl}}/tickets/9999
+Authorization: Bearer {{token}}
+
+### [TKT-16] Access tickets without token (expect 401)
+GET {{baseUrl}}/tickets/1
