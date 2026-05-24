@@ -1,0 +1,2 @@
+-- Seed data. Runs on every startup (sql.init.mode=always).
+-- Add INSERT statements here once tables exist.

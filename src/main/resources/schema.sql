@@ -1,0 +1,2 @@
+-- Schema is managed by Hibernate (ddl-auto: update).
+-- Add manual migration scripts here if needed.

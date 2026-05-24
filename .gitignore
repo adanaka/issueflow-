@@ -1,0 +1,9 @@
+target/
+uploads/
+*.class
+.idea/
+*.iml
+.env
+*.log
+*.tmp
+__MACOSX/
